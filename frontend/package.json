@@ -15,7 +15,9 @@
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
+    "@rollup/wasm-node": "^4.63.3",
     "@vitejs/plugin-react": "^4.3.3",
+    "rollup": "^4.63.3",
     "vite": "^5.4.10"
   }
 }

@@ -6,6 +6,13 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD !== undefined ? process.env.DB_PASSWORD : "",
   database: process.env.DB_NAME || "knowledge_base",
+
+  ssl: process.env.DB_SSL === "true"
+    ? {
+        minVersion: "TLSv1.2"
+      }
+    : undefined,
+
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -14,10 +21,10 @@ const pool = mysql.createPool({
 const connectDB = async () => {
   try {
     const connection = await pool.getConnection();
-    console.log("MariaDB connected successfully!");
+    console.log("Database connected successfully!");
     connection.release();
   } catch (error) {
-    console.error("MariaDB connection failed:", error.message);
+    console.error("Database connection failed:", error.message);
     process.exit(1);
   }
 };
