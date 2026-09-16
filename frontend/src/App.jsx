@@ -439,7 +439,12 @@ function Dashboard() {
 
       setItems(sortItems(data, sortBy));
 
-      if (initial) {
+      if (
+        !searchValue.trim() &&
+        !typeValue &&
+        !categoryValue &&
+        !tagValue
+      ) {
         setAllItems(data);
       }
     } catch (err) {
@@ -1644,44 +1649,44 @@ function CategoryManager() {
               <p className="manage-hint">Click a category name to filter your vault. Click Delete twice to confirm.</p>
 
               <div className="category-list">
-                {normalizedCategories.map(category => {
-                  const count =
-                    itemCountByCategory[category.name.toLowerCase()] || 0;
+              {normalizedCategories.map(category => {
+                const count =
+                  itemCountByCategory[category.name.toLowerCase()] || 0;
 
-                  return (
-                    <div className="category-row" key={category.id}>
-                      <button
-                        className="category-row-main"
-                        onClick={() =>
-                          navigate(`/?category=${encodeURIComponent(category.name)}`)
-                        }
-                        type="button"
-                      >
-                        <span className="category-row-icon">#</span>
-                        <span>
-                          <strong>{category.name}</strong>
-                          <small>
-                            {count} item{count === 1 ? "" : "s"}
-                          </small>
-                        </span>
-                      </button>
+                return (
+                  <div className="category-row" key={category.id}>
+                    <button
+                      className="category-row-main"
+                      onClick={() =>
+                        navigate(`/?category=${encodeURIComponent(category.name)}`)
+                      }
+                      type="button"
+                    >
+                      <span className="category-row-icon">#</span>
+                      <span>
+                        <strong>{category.name}</strong>
+                        <small>
+                          {count} item{count === 1 ? "" : "s"}
+                        </small>
+                      </span>
+                    </button>
 
-                      <button
-                        className={`category-delete${confirmDeleteId === category.id ? " confirm" : ""}`}
-                        type="button"
-                        onClick={() => deleteCategory(category)}
-                        disabled={deletingId === category.id}
-                        aria-label={`${confirmDeleteId === category.id ? "Confirm delete" : "Delete"} ${category.name}`}
-                      >
-                        {deletingId === category.id
-                          ? "..."
-                          : confirmDeleteId === category.id
-                            ? "Confirm"
-                            : "Delete"}
-                      </button>
-                    </div>
-                  );
-                })}
+                    <button
+                      className={`category-delete${confirmDeleteId === category.id ? " confirm" : ""}`}
+                      type="button"
+                      onClick={() => deleteCategory(category)}
+                      disabled={deletingId === category.id}
+                      aria-label={`${confirmDeleteId === category.id ? "Confirm delete" : "Delete"} ${category.name}`}
+                    >
+                      {deletingId === category.id
+                        ? "..."
+                        : confirmDeleteId === category.id
+                          ? "Confirm"
+                          : "Delete"}
+                    </button>
+                  </div>
+                );
+              })}
               </div>
             </>
           )}
