@@ -2,11 +2,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const uploadDir = path.join(__dirname, "../uploads");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+const uploadDir = process.env.VERCEL
+  ? "/tmp/knowledge-vault-uploads"
+  : path.join(__dirname, "../uploads");
 
 // Explicit allowlist of safe document and image formats
 const ALLOWED_EXTENSIONS = new Set([
@@ -38,6 +36,7 @@ const fileFilter = (req, file, cb) => {
     const error = new Error(
       `File type '${ext || "unknown"}' is not allowed. Allowed formats: PDF, Word (DOC, DOCX), Excel (XLS, XLSX), PowerPoint (PPT, PPTX), OpenDocument (ODT, ODS, ODP), Text (TXT, RTF, CSV, MD), and Images (JPG, PNG, WEBP, GIF).`
     );
+
     error.code = "INVALID_FILE_TYPE";
     return cb(error, false);
   }
@@ -47,7 +46,15 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      cb(null, uploadDir);
+    } catch (error) {
+      cb(error);
+    }
   },
 
   filename: (req, file, cb) => {
@@ -66,7 +73,7 @@ const storage = multer.diskStorage({
 const multerInstance = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10 MB limit
+    fileSize: 10 * 1024 * 1024
   },
   fileFilter
 });
@@ -77,13 +84,16 @@ const upload = {
       if (err) {
         if (err.code === "LIMIT_FILE_SIZE") {
           return res.status(400).json({
-            message: "File size exceeds the 10 MB limit. Please upload a smaller file."
+            message:
+              "File size exceeds the 10 MB limit. Please upload a smaller file."
           });
         }
+
         return res.status(400).json({
           message: err.message || "File upload rejected."
         });
       }
+
       next();
     });
   }
