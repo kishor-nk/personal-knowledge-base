@@ -169,11 +169,10 @@ function ItemDetailModal({ item, onClose }) {
   if (!item) {
     return null;
   }
-
-  const fileUrl = item.filePath
-    ? `http://localhost:5000${item.filePath}${localStorage.getItem("token")
-      ? `?token=${encodeURIComponent(
-        localStorage.getItem("token")
+const fileUrl = item.filePath
+  ? `${import.meta.env.VITE_API_URL?.replace(/\/api$/, "")}${item.filePath}${localStorage.getItem("token")
+    ? `?token=${encodeURIComponent(
+      localStorage.getItem("token")
       )}`
       : ""
     }`
