@@ -1177,12 +1177,13 @@ function Dashboard() {
                     : undefined
                 }
               >
-                {displayItems.map(item => {
-                  const fileUrl =
-                    item.filePath
-                      ? `http://localhost:5000${item.filePath}${localStorage.getItem(
-                        "token"
-                      )
+               {displayItems.map(item => {
+
+  const fileUrl =
+    item.filePath
+      ? `${import.meta.env.VITE_API_URL?.replace(/\/api$/, "")}${item.filePath}${localStorage.getItem(
+          "token"
+        )
                         ? `?token=${encodeURIComponent(
                           localStorage.getItem(
                             "token"
